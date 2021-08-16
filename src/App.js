@@ -1,3 +1,4 @@
+import Signup from "features/signup";
 import React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
@@ -10,6 +11,7 @@ function App() {
       <Switch>
         <Redirect exact from="/" to="/login" />
         <Route component={Login} path="/login" />
+        <Route component={Signup} path="/signup" />
         <Route component={ChatRoom} path="/chatroom" />
       </Switch>
     </BrowserRouter>

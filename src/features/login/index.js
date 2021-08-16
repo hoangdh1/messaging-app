@@ -2,15 +2,11 @@ import { Button } from "reactstrap";
 import firebase, { auth } from "firebase/config";
 import React, { useState, useEffect } from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-
-// const fbProvider = new firebase.auth.FacebookAuthProvider();
-// const ggProvider = new firebase.auth.GoogleAuthProvider();
+import { useHistory } from "react-router-dom";
 
 const uiConfig = {
-  // Popup signin flow rather than redirect flow.
   signInFlow: "redirect",
-  signInSuccessUrl: "/chatroom",
-  // We will display Google and Facebook as auth providers.
+  // signInSuccessUrl: "/chatroom",
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     firebase.auth.FacebookAuthProvider.PROVIDER_ID,
@@ -18,24 +14,11 @@ const uiConfig = {
 };
 
 export default function Login() {
-  // const history = useHistory();
-
-  // const handleFbLogin = () => {
-  //   auth.signInWithPopup(fbProvider);
-  // };
-
-  // const handleGgLogin = () => {
-  //   auth.signInWithPopup(ggProvider);
-  // };
-
-  // auth.onAuthStateChanged((user) => {
-  //   console.log({ user });
-  //   if (user) {
-  //     history.push("/");
-  //   }
-  // });
-
   const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
+
+  const [isSignup, setIsSignup] = useState(false); //
+
+  const history = useHistory();
 
   // Listen to the Firebase Auth state and set the local state.
   useEffect(() => {
@@ -43,6 +26,7 @@ export default function Login() {
       .auth()
       .onAuthStateChanged((user) => {
         setIsSignedIn(!!user);
+        var uid = user.uid;
       });
     return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
   }, []);
@@ -53,10 +37,16 @@ export default function Login() {
         <h1>My App</h1>
         <p>Please sign-in:</p>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
-        <p>Chua co tai khoan</p>
       </div>
     );
   }
+  if (isSignedIn) {
+    if (!isSignup) {
+      setIsSignup(true);
+      return history.push("/signup");
+    }
+  }
+
   return (
     <div>
       <h1>My App</h1>
@@ -64,12 +54,4 @@ export default function Login() {
       <Button onClick={() => firebase.auth().signOut()}>Sign-out</Button>
     </div>
   );
-
-  // return (
-  //   <div>
-  //     <p>Đăng nhập</p>
-  //     <Button onClick={handleGgLogin}>Đăng nhập bằng Google</Button>
-  //     <Button onClick={handleFbLogin}>Đăng nhập bằng Facebook</Button>
-  //   </div>
-  // );
 }
