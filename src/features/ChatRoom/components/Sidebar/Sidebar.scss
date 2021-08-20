@@ -1,0 +1,23 @@
+.sidebar {
+  .user-infor {
+    display: flex;
+    justify-content: space-between;
+
+    .avatar {
+      font-size: 20px;
+
+      img {
+        border-radius: 50%;
+        width: 40px;
+      }
+    }
+
+    .btn-signout {
+      text-align: right;
+    }
+  }
+
+  .list-users {
+    border-right: 1px solid #ccc;
+  }
+}
