@@ -1,5 +1,7 @@
-import { auth } from "firebase/config";
+import { signup } from "features/ChatRoom/userSlice";
+import firebase, { auth, db } from "firebase/config";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {
   Button,
@@ -13,34 +15,50 @@ import {
   Row,
 } from "reactstrap";
 
+var md5 = require("md5");
+
 export default function Signup() {
   const [nickname, setNickname] = useState();
   const [birthday, setBirthday] = useState();
   const [gender, setGender] = useState();
 
+  const users = useSelector((state) => state.users);
+
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  const currentUser = auth.currentUser;
+  const uid = currentUser.uid;
+  const email = currentUser.email;
+
+  const HASH = md5(email);
+  const avatarUrl = `https://www.gravatar.com/avatar/${HASH}?d=identicon`;
+
+  console.log("currentUser in signup: ", currentUser, "uid sidebar: ", uid);
 
   const registerUser = (e) => {
     e.preventDefault();
 
     const user = {
-      uid: "",
+      email,
       nickname,
       birthday,
       gender,
-      avatarUrl:
-        "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-      createdAt: new Date(),
+    };
+
+    db.collection("users").doc(uid).set({
+      nickname: nickname,
+      birthday: birthday,
+      gender: gender,
+      avatarUrl: avatarUrl,
       isSignup: true,
       isOnline: true,
-      isAvailable: false,
-    };
-    console.log(user);
+      isAvailable: true,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
 
-    // dispatch(signup(user));
     history.push("/chatroom");
   };
-  console.log("Auth: ", auth.currentUser);
 
   return (
     <div>

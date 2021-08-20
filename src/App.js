@@ -1,6 +1,7 @@
 import Signup from "features/signup";
 import firebase, { auth } from "firebase/config";
 import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
   BrowserRouter,
   Redirect,
@@ -14,6 +15,7 @@ import Login from "./features/login/index";
 
 function App() {
   const history = useHistory();
+  const dispatch = useDispatch();
   useEffect(() => {
     const unregisterAuthObserver = firebase
       .auth()
@@ -27,15 +29,16 @@ function App() {
           const currentUser = auth.currentUser;
           const uid = user.uid;
           const email = user.email;
-          const photoURL = user.photoURL;
 
-          console.log("Logged in user: ", currentUser, "uid la: ", uid);
+          console.log("currentUser in login: ", currentUser);
+
+          console.log("Logged in user with email: ", email, "uid la: ", uid);
         } catch (error) {
           console.log("Failed to login ", error.message);
         }
       });
     return () => unregisterAuthObserver();
-  }, [history]);
+  }, []);
 
   return (
     <BrowserRouter>
