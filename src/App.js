@@ -1,7 +1,7 @@
 import Signup from "features/signup";
 import firebase, { auth } from "firebase/config";
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   BrowserRouter,
   Redirect,
@@ -14,8 +14,10 @@ import ChatRoom from "./features/ChatRoom/index";
 import Login from "./features/login/index";
 
 function App() {
+  const [uidCurrentUser, setUidCurrentUser] = useState();
   const history = useHistory();
   const dispatch = useDispatch();
+
   useEffect(() => {
     const unregisterAuthObserver = firebase
       .auth()
@@ -26,11 +28,11 @@ function App() {
         }
 
         try {
-          const currentUser = auth.currentUser;
+          setUidCurrentUser(user.id);
           const uid = user.uid;
           const email = user.email;
 
-          console.log("currentUser in login: ", currentUser);
+          console.log("currentUser in login: ", uidCurrentUser);
 
           console.log("Logged in user with email: ", email, "uid la: ", uid);
         } catch (error) {

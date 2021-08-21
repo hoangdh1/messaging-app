@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  uidFriend: null,
   currentUser: [],
   users: [],
   messages: [],
@@ -16,10 +17,10 @@ const userSlice = createSlice({
     getOnlineUsers: (state, action) => {
       state.users = action.payload;
     },
-    getRealTimeMessages: (state, action) => {
-      state.messages = action.payload;
+    setUidFriend: (state, action) => {
+      state.uidFriend = action.payload;
     },
-    updateMessages: (state, action) => {
+    getRealTimeMessages: (state, action) => {
       state.messages = action.payload;
     },
   },
@@ -29,7 +30,7 @@ const { reducer: userReducer, actions } = userSlice;
 export const {
   getCurrentUser,
   getOnlineUsers,
+  setUidFriend,
   getRealTimeMessages,
-  updateMessages,
 } = actions;
 export default userReducer;

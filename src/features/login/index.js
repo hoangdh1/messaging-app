@@ -19,6 +19,9 @@ const uiConfig = {
   },
 };
 
+// Set Auth state persistence
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
 export default function Login() {
   const history = useHistory();
   const dispatch = useDispatch();

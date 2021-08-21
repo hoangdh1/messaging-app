@@ -1,12 +1,14 @@
-import { getCurrentUser, getOnlineUsers } from "features/ChatRoom/userSlice";
+import {
+  getCurrentUser,
+  getOnlineUsers,
+  setUidFriend,
+} from "features/ChatRoom/userSlice";
 import { auth, db } from "firebase/config";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button, Col, Row } from "reactstrap";
 import "./Sidebar.scss";
-
-var md5 = require("md5");
 
 export default function Sidebar() {
   const user = useSelector((state) => state.user);
@@ -54,15 +56,10 @@ export default function Sidebar() {
 
   // Start chat
   const startChat = (user) => {
-    console.log("user friend id: ", user.id);
-
-    // setChatStarted(true)
-    // setUserUid(user.uid);
-
-    // console.log(user);
-
-    // dispatch(getRealtimeConversations({ uid_1: auth.uid, uid_2: user.uid }));
+    dispatch(setUidFriend(user.id));
   };
+
+  console.log("uidFriend: ", user.uidFriend);
 
   return (
     <div className="sidebar">
@@ -88,6 +85,8 @@ export default function Sidebar() {
                 .doc(uidCurrentUser)
                 .update({ isOnline: false });
 
+              dispatch(setUidFriend(null));
+
               auth
                 .signOut()
 
@@ -108,7 +107,7 @@ export default function Sidebar() {
             if (user.isOnline === true)
               return (
                 <div
-                  onClick={startChat(user)}
+                  onClick={() => startChat(user)}
                   key={user.id}
                   className="avatar"
                   style={{ fontSize: "20px", marginBottom: "10px" }}
