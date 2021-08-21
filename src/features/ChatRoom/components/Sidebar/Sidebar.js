@@ -1,4 +1,4 @@
-import { getOnlineUsers } from "features/ChatRoom/userSlice";
+import { getCurrentUser, getOnlineUsers } from "features/ChatRoom/userSlice";
 import { auth, db } from "firebase/config";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,17 +14,31 @@ export default function Sidebar() {
 
   const history = useHistory();
 
-  const currentUser = auth.currentUser;
-  const uid = currentUser.uid;
-  console.log("currentUser in sidebar and uid: ", currentUser, uid);
+  const uidCurrentUser = auth.currentUser.uid;
+  console.log("currentUser in sidebar and uid: ", uidCurrentUser);
 
-  const HASH = md5("hoang.do1403.9@gmail.com");
+  // Get current user
+  useEffect(() => {
+    const unsubscribe = db.collection("users").onSnapshot((querySnapshot) => {
+      const currentUser = [];
+      querySnapshot.forEach(function (doc) {
+        if (doc.data().isOnline && doc.id === uidCurrentUser) {
+          currentUser.push(doc.data());
+        }
+      });
 
+      dispatch(getCurrentUser(currentUser));
+    });
+
+    return unsubscribe;
+  }, []);
+
+  // Get online user list
   useEffect(() => {
     const unsubscribe = db.collection("users").onSnapshot((querySnapshot) => {
       const users = [];
       querySnapshot.forEach(function (doc) {
-        if (doc.data().isOnline == true) {
+        if (doc.data().isOnline && doc.id !== uidCurrentUser) {
           users.push(doc.data());
         }
       });
@@ -35,21 +49,44 @@ export default function Sidebar() {
     return unsubscribe;
   }, []);
 
+  console.log("users: ", user.users);
+  console.log("current users: ", user.currentUser);
+
+  // Start chat
+  const startChat = (user) => {
+    console.log("user friend id: ", user.id);
+
+    // setChatStarted(true)
+    // setUserUid(user.uid);
+
+    // console.log(user);
+
+    // dispatch(getRealtimeConversations({ uid_1: auth.uid, uid_2: user.uid }));
+  };
+
   return (
     <div className="sidebar">
+      {/* User info */}
       <Row className="user-infor">
-        <Col className="avatar">
-          <img
-            src={`https://www.gravatar.com/avatar/${HASH}?d=identicon`}
-            alt=""
-          />
-          Tony
-        </Col>
+        {user.currentUser.map((user) => {
+          return (
+            <Col className="avatar">
+              <img
+                src={user.avatarUrl}
+                alt=""
+                style={{ marginRight: "10px" }}
+              />
+              {user.nickname}
+            </Col>
+          );
+        })}
 
         <Col className="btn-signout">
           <Button
             onClick={() => {
-              db.collection("users").doc(uid).update({ isOnline: false });
+              db.collection("users")
+                .doc(uidCurrentUser)
+                .update({ isOnline: false });
 
               auth
                 .signOut()
@@ -63,20 +100,27 @@ export default function Sidebar() {
         </Col>
       </Row>
 
+      {/* Online user list */}
       <Row className="list-users">
         <p>
           list user online
           {user.users.map((user) => {
-            if (user.isOnline == true)
+            if (user.isOnline === true)
               return (
                 <div
+                  onClick={startChat(user)}
+                  key={user.id}
                   className="avatar"
                   style={{ fontSize: "20px", marginBottom: "10px" }}
                 >
                   <img
                     src={user.avatarUrl}
                     alt=""
-                    style={{ borderRadius: "50%", width: "40px" }}
+                    style={{
+                      borderRadius: "50%",
+                      width: "40px",
+                      marginRight: "10px",
+                    }}
                   />
                   {user.nickname}
                 </div>

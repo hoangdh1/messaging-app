@@ -47,6 +47,7 @@ export default function Signup() {
     };
 
     db.collection("users").doc(uid).set({
+      id: uid,
       nickname: nickname,
       birthday: birthday,
       gender: gender,
