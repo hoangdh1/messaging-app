@@ -7,7 +7,7 @@ import { auth, db } from "firebase/config";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Button, Col, Row } from "reactstrap";
+import { Badge, Button, Col, Row, Tag } from "reactstrap";
 import "./Sidebar.scss";
 
 export default function Sidebar() {
@@ -40,7 +40,7 @@ export default function Sidebar() {
     const unsubscribe = db.collection("users").onSnapshot((querySnapshot) => {
       const users = [];
       querySnapshot.forEach(function (doc) {
-        if (doc.data().isOnline && doc.id !== uidCurrentUser) {
+        if (doc.data().isOnline) {
           users.push(doc.data());
         }
       });
@@ -56,6 +56,10 @@ export default function Sidebar() {
 
   // Start chat
   const startChat = (user) => {
+    db.collection("users")
+      .doc(uidCurrentUser)
+      .update({ chattingWith: user.id });
+
     dispatch(setUidFriend(user.id));
   };
 
@@ -83,7 +87,9 @@ export default function Sidebar() {
             onClick={() => {
               db.collection("users")
                 .doc(uidCurrentUser)
-                .update({ isOnline: false });
+                .update({ isOnline: false, chattingWith: null })
+                .then(console.log("update sign out successfully"))
+                .catch(() => console.log("update signout failed"));
 
               dispatch(setUidFriend(null));
 
@@ -103,17 +109,32 @@ export default function Sidebar() {
       <Row className="list-users">
         <p>
           list user online
-          {user.users.map((user) => {
-            if (user.isOnline === true)
+          {user.users.map((user_1) => {
+            // Is user_1 starting to chat with user_2 ?
+            const user_2 = user.users.find(
+              ({ id }) => id === user_1.chattingWith
+            );
+
+            const isAvailable = user_2
+              ? user_2.chattingWith === user_1.id
+                ? false
+                : true
+              : true;
+
+            console.log("isAvailable: ", isAvailable);
+
+            console.log("user_1.chattingWith: ", user_1.chattingWith);
+
+            if (user_1.isOnline === true && user_1.id !== uidCurrentUser)
               return (
                 <div
-                  onClick={() => startChat(user)}
-                  key={user.id}
+                  onClick={() => startChat(user_1)}
+                  key={user_1.id}
                   className="avatar"
                   style={{ fontSize: "20px", marginBottom: "10px" }}
                 >
                   <img
-                    src={user.avatarUrl}
+                    src={user_1.avatarUrl}
                     alt=""
                     style={{
                       borderRadius: "50%",
@@ -121,7 +142,11 @@ export default function Sidebar() {
                       marginRight: "10px",
                     }}
                   />
-                  {user.nickname}
+                  {user_1.nickname}
+
+                  {/* user available */}
+                  {isAvailable ? "available" : null}
+                  <Badge color="success">Success</Badge>
                 </div>
               );
           })}

@@ -54,7 +54,7 @@ export default function Signup() {
       avatarUrl: avatarUrl,
       isSignup: true,
       isOnline: true,
-      isAvailable: true,
+      chattingWith: null,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     });
 
