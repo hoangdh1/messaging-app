@@ -4,10 +4,10 @@ import {
   setUidFriend,
 } from "features/ChatRoom/userSlice";
 import { auth, db } from "firebase/config";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Badge, Button, Col, Row, Tag } from "reactstrap";
+import { Badge, Button, Col, Row } from "reactstrap";
 import "./Sidebar.scss";
 
 export default function Sidebar() {
@@ -33,7 +33,7 @@ export default function Sidebar() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [uidCurrentUser]);
 
   // Get online user list
   useEffect(() => {
@@ -84,6 +84,7 @@ export default function Sidebar() {
 
         <Col className="btn-signout">
           <Button
+            color="secondary"
             onClick={() => {
               db.collection("users")
                 .doc(uidCurrentUser)
@@ -108,7 +109,6 @@ export default function Sidebar() {
       {/* Online user list */}
       <Row className="list-users">
         <p>
-          list user online
           {user.users.map((user_1) => {
             // Is user_1 starting to chat with user_2 ?
             const user_2 = user.users.find(
@@ -131,7 +131,7 @@ export default function Sidebar() {
                   onClick={() => startChat(user_1)}
                   key={user_1.id}
                   className="avatar"
-                  style={{ fontSize: "20px", marginBottom: "10px" }}
+                  style={{ fontSize: "20px" }}
                 >
                   <img
                     src={user_1.avatarUrl}
@@ -139,14 +139,28 @@ export default function Sidebar() {
                     style={{
                       borderRadius: "50%",
                       width: "40px",
+                      marginLeft: "4px",
                       marginRight: "10px",
                     }}
                   />
                   {user_1.nickname}
 
                   {/* user available */}
-                  {isAvailable ? "available" : null}
-                  <Badge color="success">Success</Badge>
+                  {isAvailable ? (
+                    <Badge
+                      color="success"
+                      style={{
+                        marginLeft: "8px",
+                        textAlign: "right",
+                        color: "#32465a",
+                        // color: "#00ff00",
+                        backgroundColor: "#fff",
+                        fontSize: "12px",
+                      }}
+                    >
+                      Available
+                    </Badge>
+                  ) : null}
                 </div>
               );
           })}

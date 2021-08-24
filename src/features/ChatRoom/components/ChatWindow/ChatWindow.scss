@@ -1,12 +1,12 @@
 .chatwindow {
   height: 100vh;
+  max-width: 100%;
 
   .friend-infor {
     display: flex;
     height: 60px;
     justify-content: center;
     align-items: center;
-    padding: 0 16px;
     border-bottom: 1px solid rgb(230, 230, 230);
   }
   .friend-infor,
@@ -23,15 +23,24 @@
   }
 
   .chat-area {
-    height: calc(100% - 60px);
+    height: calc(100% - 70px);
     display: flex;
     flex-direction: column;
-    padding: 11px;
+    padding: 10px;
     justify-content: flex-end;
 
     .conversation {
       max-height: 100%;
       overflow-y: auto;
+
+      .message {
+        display: inline-block;
+        background: #32465a;
+        padding: 5px 10px;
+        color: #fff;
+        border-radius: 10px;
+        margin: 5px;
+      }
     }
 
     .text-input {
@@ -41,6 +50,11 @@
       padding: 2px 2px 2px 0;
       border: 1px solid 1px solid #ccc;
       border-radius: 2px;
+
+      button {
+        background-color: #32465a;
+        color: #fff;
+      }
     }
   }
 }

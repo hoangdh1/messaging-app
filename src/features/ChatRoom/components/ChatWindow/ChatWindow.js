@@ -1,17 +1,19 @@
 import { getRealTimeMessages } from "features/ChatRoom/userSlice";
 import firebase, { auth, db } from "firebase/config";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import "./ChatWindow.scss";
-
-var md5 = require("md5");
+import Linkify from "react-linkify";
+import Emojify from "react-emojione";
 
 export default function ChatWindow() {
   const [messageText, setMessageText] = useState();
 
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  const dummy = useRef();
 
   const uidFriend = user.uidFriend;
 
@@ -64,6 +66,8 @@ export default function ChatWindow() {
       });
 
     setMessageText("");
+
+    dummy.current.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -84,7 +88,7 @@ export default function ChatWindow() {
                       alt=""
                       style={{
                         borderRadius: "50%",
-                        width: "40px",
+                        width: "44px",
                         marginRight: "10px",
                       }}
                     />
@@ -104,28 +108,36 @@ export default function ChatWindow() {
                 <div
                   style={{
                     textAlign:
-                      message.uidSender == uidCurrentUser ? "right" : "left",
+                      message.uidSender === uidCurrentUser ? "right" : "left",
                   }}
                 >
-                  <p className="messageStyle">{message.messageText}</p>
+                  <p className="message">
+                    <Linkify>
+                      <Emojify>{message.messageText}</Emojify>
+                    </Linkify>
+                  </p>
                 </div>
               ))
             : null}
         </div>
+        <span ref={dummy}></span>
+
         {/* Send message */}
         <div className="text-input">
-          <InputGroup name="">
-            <Input
-              value={messageText}
-              placeholder="Type something..."
-              onChange={(e) => setMessageText(e.target.value)}
-            />
-            <InputGroupAddon addonType="append">
-              <Button color="secondary" onClick={sendMessage}>
-                Send
-              </Button>
-            </InputGroupAddon>
-          </InputGroup>
+          {user.uidFriend ? (
+            <InputGroup name="">
+              <Input
+                value={messageText}
+                placeholder="Type something..."
+                onChange={(e) => setMessageText(e.target.value)}
+              />
+              <InputGroupAddon addonType="append">
+                <Button onClick={sendMessage} disabled={!messageText}>
+                  Send
+                </Button>
+              </InputGroupAddon>
+            </InputGroup>
+          ) : null}
         </div>
       </div>
     </div>
