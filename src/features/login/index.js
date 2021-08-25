@@ -28,9 +28,25 @@ export default function Login() {
     const currentUser = auth.currentUser;
     const uid = currentUser.uid;
 
-    console.log("uid after login", uid);
+    // console.log("uid after login", uid);
+
+    // Update active user
     db.collection("users").doc(uid).update({ isOnline: true });
+
+    sessionStorage.setItem("uidCurrentUser", JSON.stringify(uid));
+
     history.push("/chatroom");
+  };
+
+  const checkBeforeSignup = () => {
+    const currentUser = auth.currentUser;
+    const uid = currentUser.uid;
+
+    // console.log("uid after login", uid);
+
+    sessionStorage.setItem("uidCurrentUser", JSON.stringify(uid));
+
+    history.push("/signup");
   };
 
   return (
@@ -40,14 +56,7 @@ export default function Login() {
       <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
       <p className="signup">
         Don't have an account?{" "}
-        <Button
-          outline
-          color="secondary"
-          size="sm"
-          onClick={() => {
-            history.push("/signup");
-          }}
-        >
+        <Button outline color="secondary" size="sm" onClick={checkBeforeSignup}>
           Sign up now
         </Button>
       </p>

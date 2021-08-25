@@ -1,4 +1,4 @@
-import firebase, { auth, db } from "firebase/config";
+import firebase, { db } from "firebase/config";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, CustomInput, Form, FormGroup, Input, Label } from "reactstrap";
@@ -13,20 +13,25 @@ export default function Signup() {
 
   const history = useHistory();
 
-  const currentUser = auth.currentUser;
-  const uid = currentUser.uid;
-  const email = currentUser.email;
+  const uidCurrentUser = JSON.parse(sessionStorage.getItem("uidCurrentUser"));
 
-  const HASH = md5(email);
-  const avatarUrl = `https://www.gravatar.com/avatar/${HASH}?d=identicon`;
+  const HASH = md5(uidCurrentUser);
+  const avatarUrl = `https://www.gravatar.com/avatar/${HASH}?d=retro`;
 
-  console.log("currentUser in signup: ", currentUser, "uid sidebar: ", uid);
+  // const currentUser = auth.currentUser;
+  // console.log(
+  //   "currentUser in signup: ",
+  //   currentUser,
+  //   "uid sidebar: ",
+  //   uidCurrentUser
+  // );
 
+  // Add info of user to firestore
   const registerUser = (e) => {
     e.preventDefault();
 
-    db.collection("users").doc(uid).set({
-      id: uid,
+    db.collection("users").doc(uidCurrentUser).set({
+      id: uidCurrentUser,
       nickname: nickname,
       birthday: birthday,
       gender: gender,
@@ -37,7 +42,7 @@ export default function Signup() {
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     });
 
-    // history.push("/chatroom");
+    history.push("/chatroom");
   };
 
   return (
@@ -90,17 +95,6 @@ export default function Signup() {
           <Button>Sign up</Button>
         </Form>
       </div>
-
-      <Button
-        onClick={() =>
-          auth
-            .signOut()
-            .then(console.log("Sign out successfully"), history.push("/"))
-            .catch(() => console.log("Sign out failed"))
-        }
-      >
-        Sign-out
-      </Button>
     </div>
   );
 }

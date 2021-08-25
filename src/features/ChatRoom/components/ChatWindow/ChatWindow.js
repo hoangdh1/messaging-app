@@ -1,11 +1,11 @@
 import { getRealTimeMessages } from "features/ChatRoom/userSlice";
-import firebase, { auth, db } from "firebase/config";
-import React, { useEffect, useRef, useState } from "react";
+import firebase, { db } from "firebase/config";
+import React, { useEffect, useState } from "react";
+import Emojify from "react-emojione";
+import Linkify from "react-linkify";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import "./ChatWindow.scss";
-import Linkify from "react-linkify";
-import Emojify from "react-emojione";
 
 export default function ChatWindow() {
   const [messageText, setMessageText] = useState();
@@ -13,19 +13,16 @@ export default function ChatWindow() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const dummy = useRef();
+  const uidCurrentUser = JSON.parse(sessionStorage.getItem("uidCurrentUser"));
+  // console.log("currentUser in chatroom and uid: ", uidCurrentUser);
 
   const uidFriend = user.uidFriend;
-
-  const uidCurrentUser = auth.currentUser.uid;
-  console.log("currentUser in chatroom and uid: ", uidCurrentUser);
 
   const roomId =
     uidCurrentUser < uidFriend
       ? uidCurrentUser + "-" + uidFriend
       : uidFriend + "-" + uidCurrentUser;
-
-  console.log("roomid: ", roomId);
+  // console.log("roomid: ", roomId);
 
   // Get realtime messages from firestore
   useEffect(() => {
@@ -66,8 +63,6 @@ export default function ChatWindow() {
       });
 
     setMessageText("");
-
-    dummy.current.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -120,7 +115,6 @@ export default function ChatWindow() {
               ))
             : null}
         </div>
-        <span ref={dummy}></span>
 
         {/* Send message */}
         <div className="text-input">
