@@ -1,44 +1,81 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+# Messaging App
 
-## Available Scripts
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template, [Firebase](https://firebase.google.com/)  
 
-In the project directory, you can run:
+The application is deployed on `Firebase` at: https://messaging-app-cfbb8.firebaseapp.com/
 
-### `npm start`
+## Overview
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- User can `login` with Facebook or Google account
+![image](https://user-images.githubusercontent.com/66484333/130940383-9985d8db-d23d-4d65-9e79-367a23c4f927.png)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
 
-### `npm test`
+- If logging in for the first time, user need to provide information to `register`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![image](https://user-images.githubusercontent.com/66484333/130940728-ca81e16b-a6e4-435d-9a38-233e44d36903.png)
 
-### `npm run build`
+- After that, user go to `chat room` and can see a list of all **online users** and can select any of the ***available users*** to start a conversation🎉
+  - ***Available users*** are users who are online and not in any conversation🎄
+  - When chatting, if one of the two users closes the chat window, both will become *available*🎎
+  - *Links and emojis* in chat messages can be automatically detected and properly formatted😀
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![image](https://user-images.githubusercontent.com/66484333/130942552-8c927ce0-1532-4a9b-97cb-a5fb606f4ca8.png)
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Quick start
 
-### `npm run eject`
+```
+$ git clone https://github.com/hoangdh1/messaging-app.git
+$ cd messaging-app
+$ npm install
+$ npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Structure Database 
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+> Collection users
+```
+users
+|__userId_1
+|    |__id
+|    |__nickname
+|    |__birthday
+|    |__gender
+|    |__avatarUrl
+|    |__isSignup
+|    |__isOnline
+|    |__chattingWith
+|    |__createdAt
+|
+|__userId_2
+     |__...
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+> Collection messages
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+messages
+|__roomId_1
+|    |__message
+|        |__message_1
+|            |__messageText
+|            |__uidSender
+|            |__createdAt
+|
+|__roomId_2
+    |__...
+```
+with `roomId: `
+```js
+const roomId =
+    uidCurrentUser < uidFriend
+      ? uidCurrentUser + "-" + uidFriend
+      : uidFriend + "-" + uidCurrentUser;
+```
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+
+
