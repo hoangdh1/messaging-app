@@ -7,12 +7,15 @@ The application is deployed on `Firebase` at: https://messaging-app-cfbb8.fireba
 ## Overview
 
 - User can `login` with Facebook or Google account
+
 ![image](https://user-images.githubusercontent.com/66484333/130940383-9985d8db-d23d-4d65-9e79-367a23c4f927.png)
+
 
 
 - If logging in for the first time, user need to provide information to `register`
 
 ![image](https://user-images.githubusercontent.com/66484333/130940728-ca81e16b-a6e4-435d-9a38-233e44d36903.png)
+
 
 - After that, user go to `chat room` and can see a list of all **online users** and can select any of the ***available users*** to start a conversation🎉
   - ***Available users*** are users who are online and not in any conversation🎄
@@ -34,6 +37,8 @@ $ npm start
 ## Structure Database 
 
 > Collection users
+
+
 ```
 users
 |__userId_1
@@ -51,7 +56,10 @@ users
      |__...
 ```
 
+
 > Collection messages
+
+
 
 ```
 messages
