@@ -4,13 +4,13 @@ import "firebase/auth";
 import "firebase/firestore";
 
 var firebaseConfig = {
-  apiKey: "AIzaSyBO8gAtYvBqLi4zucDtRWmpIrKRrkOZC1Y",
-  authDomain: "messaging-app-cfbb8.firebaseapp.com",
-  projectId: "messaging-app-cfbb8",
-  storageBucket: "messaging-app-cfbb8.appspot.com",
-  messagingSenderId: "680295016385",
-  appId: "1:680295016385:web:7a9f890e332961137c7140",
-  measurementId: "G-DRNV8BWC0E",
+  apiKey: process.env.FIREBASEE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
